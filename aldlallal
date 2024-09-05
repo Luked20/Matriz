@@ -1,0 +1,78 @@
+#include <iostream>
+
+void getDeterminant(double M[3][3], double& detM) {
+    detM = (M[0][0] * M[1][1] * M[2][2]) + (M[0][1] * M[1][2] * M[2][0]) + (M[0][2] * M[1][0] * M[2][1])
+         - (M[0][0] * M[1][2] * M[2][1]) - (M[0][1] * M[1][0] * M[2][2]) - (M[0][2] * M[1][1] * M[2][0]);
+}
+
+void GetAdj(double M[3][3], double adjM[3][3]) {
+    adjM[0][0] = (M[1][1] * M[2][2]) - (M[1][2] * M[2][1]);
+    adjM[0][1] = (M[0][2] * M[2][1]) - (M[0][1] * M[2][2]);
+    adjM[0][2] = (M[0][1] * M[1][2]) - (M[0][2] * M[1][1]);
+    adjM[1][0] = (M[1][2] * M[2][0]) - (M[1][0] * M[2][2]);
+    adjM[1][1] = (M[0][0] * M[2][2]) - (M[0][2] * M[2][0]);
+    adjM[1][2] = (M[0][2] * M[1][0]) - (M[0][0] * M[1][2]);
+    adjM[2][0] = (M[1][0] * M[2][1]) - (M[1][1] * M[2][0]);
+    adjM[2][1] = (M[0][1] * M[2][0]) - (M[0][0] * M[2][1]);
+    adjM[2][2] = (M[0][0] * M[1][1]) - (M[0][1] * M[1][0]);
+}
+
+void multiply(double M[3][3], double vetigual[3], double solution[3]) {
+    for (int i = 0; i < 3; i++) {
+        solution[i] = 0;
+        for (int j = 0; j < 3; j++) {
+            solution[i] += M[i][j] * vetigual[j];
+        }
+    }
+}
+
+void GetInv(double M[3][3], double inv[3][3]){
+    double detM;
+    getDeterminant(M, detM);
+    double adjM[3][3];
+    GetAdj(M, adjM);
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            inv[i][j] = adjM[i][j] / detM;
+        }
+    }
+}
+
+void GetSolution(double M[3][3], double vetigual[3], double solution[3]){
+    double inv[3][3];
+    GetInv(M, inv);
+    multiply(inv, vetigual, solution); 
+}
+
+int main()
+{
+    double M[3][3];
+    double vetigual[3];
+    double solution[3];
+
+    // Leitura da matriz M
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            std::cout << "Digite o elemento [" << i << "][" << j << "] da matriz M: ";
+            std::cin >> M[i][j];
+        }
+    }
+
+    // Leitura do vetor vetigual
+    for (int i = 0; i < 3; i++) {
+        std::cout << "Digite o elemento [" << i << "] do vetor vetigual: ";
+        std::cin >> vetigual[i];
+    }
+
+    GetSolution(M, vetigual, solution);
+    
+    // Impressão do resultado
+    std::cout << "O resultado de x, y, z é: ";
+    for (int i = 0; i < 3; i++) {
+        std::cout << solution[i] << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+
